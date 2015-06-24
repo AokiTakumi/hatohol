@@ -328,6 +328,20 @@ struct HatoholArmPluginGateHAPI2::Impl
 			MLPL_WARN("Failed to call %s\n", m_methodName.c_str());
 		}
 	};
+	void setPluginConnectStatus(
+	  const HAPI2PluginCollectType &type,
+	  const HAPI2PluginErrorCode &errorCode)
+	{
+		TriggerStatusType status;
+		if (errorCode == HAPI2PluginErrorCode::UNAVAILABLE_HAP2) {
+			status = TRIGGER_STATUS_PROBLEM;
+		} else if (errorCode == HAPI2PluginErrorCode::OK) {
+			status = TRIGGER_STATUS_OK;
+		} else {
+			status = TRIGGER_STATUS_UNKNOWN;
+		}
+		utils.updateTriggerStatus(static_cast<size_t>(type), status);
+	}
 };
 
 // ---------------------------------------------------------------------------
@@ -1680,13 +1694,5 @@ void HatoholArmPluginGateHAPI2::setPluginConnectStatus(
   const HAPI2PluginCollectType &type,
   const HAPI2PluginErrorCode &errorCode)
 {
-	TriggerStatusType status;
-	if (errorCode == HAPI2PluginErrorCode::UNAVAILABLE_HAP2) {
-		status = TRIGGER_STATUS_PROBLEM;
-	} else if (errorCode == HAPI2PluginErrorCode::OK) {
-		status = TRIGGER_STATUS_OK;
-	} else {
-		status = TRIGGER_STATUS_UNKNOWN;
-	}
-	m_impl->utils.updateTriggerStatus(static_cast<size_t>(type), status);
+	m_impl->setPluginConnectStatus(type, errorCode);
 }
