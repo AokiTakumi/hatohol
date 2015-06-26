@@ -348,6 +348,7 @@ struct HatoholArmPluginGateHAPI2::Impl
 			MLPL_WARN("Failed to call %s\n", m_methodName.c_str());
 		}
 	};
+
 	void setPluginConnectStatus(
 	  const HAPI2PluginCollectType &type,
 	  const HAPI2PluginErrorCode &errorCode)
