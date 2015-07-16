@@ -24,7 +24,13 @@ var TriggersView = function(userProfile) {
   self.reloadIntervalSeconds = 60;
   self.currentPage = 0;
   self.baseQuery = {
-    limit: 50,
+    limit:           50,
+    offset:          0,
+    minimumSeverity: "0",
+    status:          "-1",
+    serverId:        "-1",
+    hostgroupId:     "*",
+    hostId:          "*",
   };
   $.extend(self.baseQuery, getTriggersQueryInURI());
   self.lastQuery = undefined;
@@ -40,15 +46,45 @@ var TriggersView = function(userProfile) {
 
   function start() {
     self.userConfig.get({
-      itemNames:['num-triggers-per-page'],
+      itemNames:['num-triggers-per-page',
+                 'triggers-filter-offset', 'triggers-filter-minimum-severity',
+                 'triggers-filter-status', 'triggers-filter-server',
+                 'triggers-filter-host-group', 'triggers-filter-host'],
       successCallback: function(conf) {
         self.baseQuery.limit =
           self.userConfig.findOrDefault(conf, 'num-triggers-per-page',
                                         self.baseQuery.limit);
+
+        self.baseQuery.offset =
+          self.userConfig.findOrDefault(conf, 'triggers-filter-offset',
+                                        self.baseQuery.offset);
+
+        self.currentPage = self.baseQuery.offset / self.baseQuery.limit;
+
+        self.baseQuery.minimumSeverity =
+          self.userConfig.findOrDefault(conf, 'triggers-filter-minimum-severity',
+                                        self.baseQuery.minimumSeverity);
+
+        self.baseQuery.status =
+          self.userConfig.findOrDefault(conf, 'triggers-filter-status',
+                                        self.baseQuery.status);
+
+        self.baseQuery.serverId =
+          self.userConfig.findOrDefault(conf, 'triggers-filter-server',
+                                        self.baseQuery.serverId);
+
+        self.baseQuery.hostgroupId =
+          self.userConfig.findOrDefault(conf, 'triggers-filter-host-group',
+                                        self.baseQuery.hostgroupId);
+
+        self.baseQuery.hostId =
+          self.userConfig.findOrDefault(conf, 'triggers-filter-host',
+                                        self.baseQuery.hostId);
+
         updatePager();
         setupFilterValues();
         setupCallbacks();
-        load();
+        load(self.currentPage);
       },
       connectErrorCallback: function(XMLHttpRequest) {
         showXHRError(XMLHttpRequest);
@@ -80,10 +116,20 @@ var TriggersView = function(userProfile) {
       numRecordsPerPage: self.baseQuery.limit,
       selectPageCallback: function(page) {
         load(page);
+        var items = {}, isChanged = false;
         if (self.pager.numRecordsPerPage != self.baseQuery.limit) {
           self.baseQuery.limit = self.pager.numRecordsPerPage;
-          saveConfig({'num-triggers-per-page': self.baseQuery.limit});
+          $.extend(items, {'num-triggers-per-page': self.baseQuery.limit});
+          isChanged = true;
         }
+        var val = self.currentPage * self.baseQuery.limit;
+        if (self.baseQuery.offset != val) {
+          self.baseQuery.offset = val;
+          $.extend(items, {'triggers-filter-offset': self.baseQuery.offset});
+          isChanged = true;
+        }
+        if (isChanged)
+          saveConfig(items);
       }
     });
   }
@@ -130,8 +176,54 @@ var TriggersView = function(userProfile) {
 
     self.setupHostQuerySelectorCallback(
       load, '#select-server', '#select-host-group', '#select-host');
-    $("#select-severity, #select-status").change(function() {
+
+    $('#select-severity').change(function() {
+      var val = $('#select-severity').val();
+      if (self.baseQuery.minimumSeverity != val) {
+        self.baseQuery.minimumSeverity = val;
+        saveConfig({'triggers-filter-minimum-severity': self.baseQuery.minimumSeverity});
+      }
       load();
+    });
+
+    $('#select-status').change(function() {
+      var val = $('#select-status').val();
+      if (self.baseQuery.status != val) {
+        self.baseQuery.status = val;
+        saveConfig({'triggers-filter-status': self.baseQuery.status});
+      }
+      load();
+    });
+
+    $("#select-server, #select-host-group, #select-host").change(function() {
+      var val = "", items = {};
+
+      val = self.getTargetServerId();
+      if (!val) {
+        val = "-1";
+      }
+      if (self.baseQuery.serverId != val) {
+        self.baseQuery.serverId = val;
+        $.extend(items, {'triggers-filter-server': self.baseQuery.serverId});
+      }
+
+      val = self.getTargetHostgroupId();
+      if (!val)
+        val = "*";
+      if (self.baseQuery.hostgroupId != val) {
+        self.baseQuery.hostgroupId = val;
+        $.extend(items, {'triggers-filter-host-group': self.baseQuery.hostgroupId});
+      }
+
+      val = self.getTargetHostId();
+      if (!val)
+        val = "*";
+      if (self.baseQuery.hostId != val) {
+        self.baseQuery.hostId = val;
+        $.extend(items, {'triggers-filter-host': self.baseQuery.hostId});
+      }
+
+      saveConfig(items);
     });
   }
 
@@ -240,12 +332,21 @@ var TriggersView = function(userProfile) {
   }
 
   function getQuery(page) {
-    if (isNaN(page))
+    if (isNaN(page)) {
       page = 0;
+    }
+    if (self.currentPage != page)
+      self.currentPage = page;
+
+    var val = self.currentPage * self.baseQuery.limit;
+    if (self.baseQuery.offset != val) {
+      self.baseQuery.offset = val;
+      saveConfig({'triggers-filter-offset': self.baseQuery.offset});
+    }
+
     var query = $.extend({}, self.baseQuery, {
       minimumSeverity: $("#select-severity").val(),
       status:          $("#select-status").val(),
-      offset:          self.baseQuery.limit * page
     });
     if (self.lastQuery)
       $.extend(query, self.getHostFilterQuery());
@@ -258,6 +359,8 @@ var TriggersView = function(userProfile) {
     setLoading(true);
     if (!isNaN(page)) {
       self.currentPage = page;
+    } else {
+      self.currentPage = 0;
     }
     self.startConnection(getQuery(self.currentPage), updateCore);
     self.pager.update({ currentPage: self.currentPage });

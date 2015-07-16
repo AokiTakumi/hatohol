@@ -23,8 +23,11 @@ var OverviewItems = function(userProfile) {
 
   self.reloadIntervalSeconds = 60;
   self.baseQuery = {
-    limit:  0,
-    offset: 0,
+    limit:       0,
+    offset:      0,
+    serverId:    "-1",
+    hostgroupId: "*",
+    hostId:      "*",
   };
   $.extend(self.baseQuery, getItemsQueryInURI());
   self.lastQuery = undefined;
@@ -34,16 +37,95 @@ var OverviewItems = function(userProfile) {
   // call the constructor of the super class
   HatoholMonitoringView.apply(this, [userProfile]);
 
-  setupFilterValues();
-  load();
+  self.userConfig = new HatoholUserConfig();
+  start();
 
-  self.setupHostQuerySelectorCallback(
-    load, '#select-server', '#select-host-group', '#select-host');
+  function start() {
+    self.userConfig.get({
+      itemNames:['overview-items-filter-server',
+                 'overview-items-filter-host-group',
+                 'overview-items-filter-host'],
+      successCallback: function(conf) {
+        self.baseQuery.serverId =
+          self.userConfig.findOrDefault(conf, 'overview-items-filter-server',
+                                        self.baseQuery.serverId);
 
-  $("#select-severity").change(function() {
-    // not implemented yet
-    load();
-  });
+        self.baseQuery.hostgroupId =
+          self.userConfig.findOrDefault(conf, 'overview-items-filter-host-group',
+                                        self.baseQuery.hostgroupId);
+
+        self.baseQuery.hostId =
+          self.userConfig.findOrDefault(conf, 'overview-items-filter-host',
+                                        self.baseQuery.hostId);
+
+        setupFilterValues();
+        setupCallbacks();
+        load();
+      },
+      connectErrorCallback: function(XMLHttpRequest) {
+        showXHRError(XMLHttpRequest);
+      },
+    });
+  }
+
+  function showXHRError(XMLHttpRequest) {
+    var errorMsg = "Error: " + XMLHttpRequest.status + ": " +
+      XMLHttpRequest.statusText;
+    hatoholErrorMsgBox(errorMsg);
+  }
+
+  function saveConfig(items) {
+    self.userConfig.store({
+      items: items,
+      successCallback: function() {
+        // we just ignore it
+      },
+      connectErrorCallback: function(XMLHttpRequest) {
+        showXHRError(XMLHttpRequest);
+      },
+    });
+  }
+
+  function setupCallbacks() {
+    self.setupHostQuerySelectorCallback(
+      load, '#select-server', '#select-host-group', '#select-host');
+
+    $("#select-severity").change(function() {
+      // not implemented yet
+      load();
+    });
+
+    $("#select-server, #select-host-group, #select-host").change(function() {
+      var val = "", items = {};
+
+      val = self.getTargetServerId();
+      if (!val) {
+        val = "-1";
+      }
+      if (self.baseQuery.serverId != val) {
+        self.baseQuery.serverId = val;
+        $.extend(items, {'overview-items-filter-server': self.baseQuery.serverId});
+      }
+
+      val = self.getTargetHostgroupId();
+      if (!val)
+        val = "*";
+      if (self.baseQuery.hostgroupId != val) {
+        self.baseQuery.hostgroupId = val;
+        $.extend(items, {'overview-items-filter-host-group': self.baseQuery.hostgroupId});
+      }
+
+      val = self.getTargetHostId();
+      if (!val)
+        val = "*";
+      if (self.baseQuery.hostId != val) {
+        self.baseQuery.hostId = val;
+        $.extend(items, {'overview-items-filter-host': self.baseQuery.hostId});
+      }
+
+      saveConfig(items);
+    });
+  }
 
   function parseData(replyData) {
     var parsedData = {};

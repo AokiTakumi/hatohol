@@ -31,6 +31,11 @@ var EventsView = function(userProfile, baseElem) {
     limitOfUnifiedId: 0,
     sortType:         "time",
     sortOrder:        hatohol.DATA_QUERY_OPTION_SORT_DESCENDING,
+    minimumSeverity:  "0",
+    status:           "-1",
+    serverId:         "-1",
+    hostgroupId:      "*",
+    hostId:           "*",
   };
   $.extend(self.baseQuery, getEventsQueryInURI());
   self.lastQuery = undefined;
@@ -55,7 +60,10 @@ var EventsView = function(userProfile, baseElem) {
   //
   function start() {
     self.userConfig.get({
-      itemNames:['num-records-per-page', 'event-sort-order'],
+      itemNames:['num-records-per-page', 'event-sort-order',
+                 'event-filter-offset', 'event-filter-minimum-severity',
+                 'event-filter-status', 'event-filter-server',
+                 'event-filter-host-group', 'event-filter-host'],
       successCallback: function(conf) {
         self.baseQuery.limit =
           self.userConfig.findOrDefault(conf, 'num-records-per-page',
@@ -66,6 +74,33 @@ var EventsView = function(userProfile, baseElem) {
         self.baseQuery.sortOrder =
           self.userConfig.findOrDefault(conf, 'event-sort-order',
                                         self.baseQuery.sortOrder);
+
+        self.baseQuery.offset =
+          self.userConfig.findOrDefault(conf, 'event-filter-offset',
+                                        self.baseQuery.offset);
+
+        self.currentPage = self.baseQuery.offset / self.baseQuery.limit;
+
+        self.baseQuery.minimumSeverity =
+          self.userConfig.findOrDefault(conf, 'event-filter-minimum-severity',
+                                        self.baseQuery.minimumSeverity);
+
+        self.baseQuery.status =
+          self.userConfig.findOrDefault(conf, 'event-filter-status',
+                                        self.baseQuery.status);
+
+        self.baseQuery.serverId =
+          self.userConfig.findOrDefault(conf, 'event-filter-server',
+                                        self.baseQuery.serverId);
+
+        self.baseQuery.hostgroupId =
+          self.userConfig.findOrDefault(conf, 'event-filter-host-group',
+                                        self.baseQuery.hostgroupId);
+
+        self.baseQuery.hostId =
+          self.userConfig.findOrDefault(conf, 'event-filter-host',
+                                        self.baseQuery.hostId);
+
         updatePager();
         setupFilterValues();
         setupCallbacks();
@@ -74,8 +109,7 @@ var EventsView = function(userProfile, baseElem) {
           (self.baseQuery.sortOrder == hatohol.DATA_QUERY_OPTION_SORT_ASCENDING) ? "asc" : "desc";
         var thTime = $("#table").find("thead th").eq(1);
         thTime.stupidsort(direction);
-
-        load();
+        load(self.currentPage);
       },
       connectErrorCallback: function(XMLHttpRequest, textStatus, errorThrown) {
         showXHRError(XMLHttpRequest);
@@ -102,10 +136,21 @@ var EventsView = function(userProfile, baseElem) {
       numRecordsPerPage: self.baseQuery.limit,
       selectPageCallback: function(page) {
         load(page);
+
+        var items = {}, isChanged = false;
         if (self.pager.numRecordsPerPage != self.baseQuery.limit) {
           self.baseQuery.limit = self.pager.numRecordsPerPage;
-          saveConfig({'num-records-per-page': self.baseQuery.limit});
+          items = {'num-records-per-page': self.baseQuery.limit};
+          isChanged = true;
         }
+        var val = self.currentPage * self.baseQuery.limit;
+        if (self.baseQuery.offset != val) {
+          self.baseQuery.offset = val;
+          $.extend(items, {'event-filter-offset': self.baseQuery.offset});
+          isChanged = true;
+        }
+        if (isChanged)
+          saveConfig(items);
       }
     });
   }
@@ -209,11 +254,57 @@ var EventsView = function(userProfile, baseElem) {
         th.eq(data.column).append("<i class='sort glyphicon glyphicon-arrow-" + icon +"'></i>");
     });
 
-    $("#select-severity, #select-status").change(function() {
+    $('#select-severity').change(function() {
+      var val = $('#select-severity').val();
+      if (self.baseQuery.minimumSeverity != val) {
+        self.baseQuery.minimumSeverity = val;
+        saveConfig({'event-filter-minimum-severity': self.baseQuery.minimumSeverity});
+      }
       load();
     });
+
+    $('#select-status').change(function() {
+      var val = $('#select-status').val();
+      if (self.baseQuery.status != val) {
+        self.baseQuery.status = val;
+        saveConfig({'event-filter-status': self.baseQuery.status});
+      }
+      load();
+    });
+
     self.setupHostQuerySelectorCallback(
       load, '#select-server', '#select-host-group', '#select-host');
+
+    $("#select-server, #select-host-group, #select-host").change(function() {
+      var val = "", items = {};
+
+      val = self.getTargetServerId();
+      if (!val) {
+        val = "-1";
+      }
+      if (self.baseQuery.serverId != val) {
+        self.baseQuery.serverId = val;
+        $.extend(items, {'event-filter-server': self.baseQuery.serverId});
+      }
+
+      val = self.getTargetHostgroupId();
+      if (!val)
+        val = "*";
+      if (self.baseQuery.hostgroupId != val) {
+        self.baseQuery.hostgroupId = val;
+        $.extend(items, {'event-filter-host-group': self.baseQuery.hostgroupId});
+      }
+
+      var val = self.getTargetHostId();
+      if (!val)
+        val = "*";
+      if (self.baseQuery.hostId != val) {
+        self.baseQuery.hostId = val;
+        $.extend(items, {'event-filter-host': self.baseQuery.hostId});
+      }
+
+      saveConfig(items);
+    });
 
     $('#num-records-per-page').change(function() {
       var val = parseInt($('#num-records-per-page').val());
@@ -439,6 +530,14 @@ var EventsView = function(userProfile, baseElem) {
   function updateCore(reply) {
     self.rawData = reply;
     self.durations = parseData(self.rawData);
+    if (!self.rawData["events"].length) {
+      if (self.baseQuery.offset != 0) {
+        self.baseQuery.offset = 0;
+        saveConfig({'event-filter-offset': self.baseQuery.offset});
+      }
+      if (self.currentPage != 0)
+        self.currentPage = 0;
+    }
 
     setupFilterValues();
     drawTableContents();

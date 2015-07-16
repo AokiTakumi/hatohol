@@ -24,7 +24,12 @@ var LatestView = function(userProfile) {
   self.reloadIntervalSeconds = 60;
   self.currentPage = 0;
   self.baseQuery = {
-    limit: 50,
+    limit:       50,
+    offset:      0,
+    serverId:    "-1",
+    hostgroupId: "*",
+    hostId:      "*",
+    appName:     "",
   };
   $.extend(self.baseQuery, getItemsQueryInURI());
   self.lastQuery = undefined;
@@ -41,15 +46,40 @@ var LatestView = function(userProfile) {
   function start() {
     var numRecordsPerPage;
     self.userConfig.get({
-      itemNames:['num-items-per-page'],
+      itemNames:['num-items-per-page', 'items-filter-offset',
+                 'items-filter-server', 'items-filter-host-group',
+                 'items-filter-host', 'items-filter-application'],
       successCallback: function(conf) {
         self.baseQuery.limit =
           self.userConfig.findOrDefault(conf, 'num-items-per-page',
                                         self.baseQuery.limit);
+
+        self.baseQuery.offset =
+          self.userConfig.findOrDefault(conf, 'items-filter-offset',
+                                        self.baseQuery.offset);
+
+        self.currentPage = self.baseQuery.offset / self.baseQuery.limit;
+
+        self.baseQuery.serverId =
+          self.userConfig.findOrDefault(conf, 'items-filter-server',
+                                        self.baseQuery.serverId);
+
+        self.baseQuery.hostgroupId =
+          self.userConfig.findOrDefault(conf, 'items-filter-host-group',
+                                        self.baseQuery.hostgroupId);
+
+        self.baseQuery.hostId =
+          self.userConfig.findOrDefault(conf, 'items-filter-host',
+                                        self.baseQuery.hostId);
+
+        self.baseQuery.appName =
+          self.userConfig.findOrDefault(conf, 'items-filter-application',
+                                        self.baseQuery.appName);
+
         updatePager();
         setupFilterValues();
         setupCallbacks();
-        load();
+        load(self.currentPage);
       },
       connectErrorCallback: function(XMLHttpRequest) {
         showXHRError(XMLHttpRequest);
@@ -81,10 +111,24 @@ var LatestView = function(userProfile) {
       numRecordsPerPage: self.baseQuery.limit,
       selectPageCallback: function(page) {
         load(page);
+        var items = {}, isChanged = false;
         if (self.pager.numRecordsPerPage != self.baseQuery.limit) {
           self.baseQuery.limit = self.pager.numRecordsPerPage;
-          saveConfig({'num-items-per-page': self.baseQuery.limit});
+          $.extend(items, {'num-items-per-page': self.baseQuery.limit});
+////          saveConfig({'num-items-per-page': self.baseQuery.limit});
+          isChanged = true;
         }
+
+        var val = self.currentPage * self.baseQuery.limit;
+        if (self.baseQuery.offset != val) {
+          self.baseQuery.offset = val;
+//          saveConfig({'items-filter-offset': self.baseQuery.offset});
+          $.extend(items, {'items-filter-offset': self.baseQuery.offset});
+          isChanged = true;
+        }
+
+        if (isChanged)
+           saveConfig(items);
       }
     });
   }
@@ -100,6 +144,8 @@ var LatestView = function(userProfile) {
 
     if ('limit' in query)
       $('#num-items-per-page').val(query.limit);
+    if ("appName" in query)
+      $('#select-application').val(self.baseQuery.appName);
   }
 
   function setupCallbacks() {
@@ -113,6 +159,50 @@ var LatestView = function(userProfile) {
 
     self.setupHostQuerySelectorCallback(
       load, '#select-server', '#select-host-group', '#select-host', '#select-application');
+
+    $("#select-server, #select-host-group, #select-host").change(function() {
+      var val = "", items = {};
+
+      val = self.getTargetServerId();
+      if (!val) {
+        val = "-1";
+      }
+      if (self.baseQuery.serverId != val) {
+        self.baseQuery.serverId = val;
+        $.extend(items, {'items-filter-server': self.baseQuery.serverId});
+      }
+
+      val = self.getTargetHostgroupId();
+      if (!val)
+        val = "*";
+      if (self.baseQuery.hostgroupId != val) {
+        self.baseQuery.hostgroupId = val;
+        $.extend(items, {'items-filter-host-group': self.baseQuery.hostgroupId});
+      }
+
+      val = self.getTargetHostId();
+      if (!val)
+        val = "*";
+      if (self.baseQuery.hostId != val) {
+        self.baseQuery.hostId = val;
+        $.extend(items, {'items-filter-host': self.baseQuery.hostId});
+      }
+
+      if (self.baseQuery.offset != 0) {
+        self.baseQuery.offset = 0;
+        $.extend(items, {'items-filter-offset': self.baseQuery.offset});
+      }
+
+      saveConfig(items);
+    });
+
+    $('#select-application').change(function() {
+      var val = self.getTargetAppName();
+      if (self.baseQuery.appName != val) {
+        self.baseQuery.appName = val;
+        saveConfig({'items-filter-application': self.baseQuery.appName});
+      }
+    });
   }
 
   function parseData(replyData) {
@@ -238,9 +328,16 @@ var LatestView = function(userProfile) {
   function getQuery(page) {
     if (isNaN(page))
       page = 0;
+    if (self.currentPage != page)
+      self.currentPage = page;
+    var val = self.baseQuery.limit * self.currentPage;
+    if (self.baseQuery.offset != val) {
+      self.baseQuery.offset = val;
+      saveConfig({'items-filter-offset': self.baseQuery.offset});
+    }
+
     var query = $.extend({}, self.baseQuery, {
       limit:  self.baseQuery.limit,
-      offset: self.baseQuery.limit * page
     });
     if (self.lastQuery) {
       $.extend(query, self.getHostFilterQuery());
@@ -253,8 +350,13 @@ var LatestView = function(userProfile) {
   function load(page) {
     self.displayUpdateTime();
     setLoading(true);
-    if (!isNaN(page)) {
-      self.currentPage = page;
+    if (isNaN(page))
+      page = 0;
+    self.currentPage = page;
+    var val = self.currentPage * self.baseQuery.limit;
+    if (self.baseQuery.offset != val) {
+      self.baseQuery.offset = val;
+      saveConfig({'items-filter-offset': self.baseQuery.offset});
     }
     self.startConnection(getQuery(self.currentPage), updateCore);
     self.pager.update({ currentPage: self.currentPage });

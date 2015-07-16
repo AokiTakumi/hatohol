@@ -23,8 +23,13 @@ var OverviewTriggers = function(userProfile) {
 
   self.reloadIntervalSeconds = 60;
   self.baseQuery = {
-    limit:  0,
-    offset: 0,
+    limit:           0,
+    offset:          0,
+    minimumSeverity: "0",
+    status:          "-1",
+    serverId:        "-1",
+    hostgroupId:     "*",
+    hostId:          "*",
   };
   $.extend(self.baseQuery, getTriggersQueryInURI());
   self.lastQuery = undefined;
@@ -34,14 +39,118 @@ var OverviewTriggers = function(userProfile) {
   // call the constructor of the super class
   HatoholMonitoringView.apply(this, [userProfile]);
 
-  setupFilterValues();
-  load();
+  self.userConfig = new HatoholUserConfig();
+  start();
 
-  self.setupHostQuerySelectorCallback(
-    load, '#select-server', '#select-host-group', '#select-host');
-  $("#select-severity, #select-status").change(function() {
-    load();
-  });
+  function start() {
+    self.userConfig.get({
+      itemNames:['overview-triggers-filter-minimum-severity',
+                 'overview-triggers-filter-status',
+                 'overview-triggers-filter-server',
+                 'overview-triggers-filter-host-group',
+                 'overview-triggers-filter-host'],
+      successCallback: function(conf) {
+        self.baseQuery.minimumSeverity =
+          self.userConfig.findOrDefault(conf, 'overview-triggers-filter-minimum-severity',
+                                        self.baseQuery.minimumSeverity);
+
+        self.baseQuery.status =
+          self.userConfig.findOrDefault(conf, 'overview-triggers-filter-status',
+                                        self.baseQuery.status);
+
+        self.baseQuery.serverId =
+          self.userConfig.findOrDefault(conf, 'overview-triggers-filter-server',
+                                        self.baseQuery.serverId);
+
+        self.baseQuery.hostgroupId =
+          self.userConfig.findOrDefault(conf, 'overview-triggers-filter-host-group',
+                                        self.baseQuery.hostgroupId);
+
+        self.baseQuery.hostId =
+          self.userConfig.findOrDefault(conf, 'overview-triggers-filter-host',
+                                        self.baseQuery.hostId);
+
+        setupFilterValues();
+        setupCallbacks();
+        load();
+      },
+      connectErrorCallback: function(XMLHttpRequest) {
+        showXHRError(XMLHttpRequest);
+      },
+    });
+  }
+
+  function showXHRError(XMLHttpRequest) {
+    var errorMsg = "Error: " + XMLHttpRequest.status + ": " +
+      XMLHttpRequest.statusText;
+    hatoholErrorMsgBox(errorMsg);
+  }
+
+  function saveConfig(items) {
+    self.userConfig.store({
+      items: items,
+      successCallback: function() {
+        // we just ignore it
+      },
+      connectErrorCallback: function(XMLHttpRequest) {
+        showXHRError(XMLHttpRequest);
+      },
+    });
+  }
+
+  function setupCallbacks() {
+    self.setupHostQuerySelectorCallback(
+      load, '#select-server', '#select-host-group', '#select-host');
+
+    $('#select-severity').change(function() {
+      var val = $('#select-severity').val();
+      if (self.baseQuery.minimumSeverity != val) {
+        self.baseQuery.minimumSeverity = val;
+        saveConfig({'overview-triggers-filter-minimum-severity': self.baseQuery.minimumSeverity});
+      }
+      load();
+    });
+
+    $('#select-status').change(function() {
+      var val = $('#select-status').val();
+      if (self.baseQuery.status != val) {
+        self.baseQuery.status = val;
+        saveConfig({'overview-triggers-filter-status': self.baseQuery.status});
+      }
+      load();
+    });
+
+    $("#select-server, #select-host-group, #select-host").change(function() {
+      var val = "", items = {};
+
+      val = self.getTargetServerId();
+      if (!val) {
+        val = "-1";
+      }
+      if (self.baseQuery.serverId != val) {
+        self.baseQuery.serverId = val;
+        $.extend(items, {'overview-triggers-filter-server': self.baseQuery.serverId});
+      }
+
+      val = self.getTargetHostgroupId();
+      if (!val)
+        val = "*";
+      if (self.baseQuery.hostgroupId != val) {
+        self.baseQuery.hostgroupId = val;
+        $.extend(items, {'overview-triggers-filter-host-group': self.baseQuery.hostgroupId});
+      }
+
+      val = self.getTargetHostId();
+      if (!val)
+        val = "*";
+      if (self.baseQuery.hostId != val) {
+        self.baseQuery.hostId = val;
+        $.extend(items, {'overview-triggers-filter-host': self.baseQuery.hostId});
+      }
+
+      saveConfig(items);
+    });
+  }
 
   function parseData(replyData, minimum) {
     var parsedData = {};
