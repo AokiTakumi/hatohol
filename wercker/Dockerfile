@@ -24,6 +24,7 @@ RUN yum install -y cutter tar
 RUN git clone https://github.com/project-hatohol/hatohol.git ~/hatohol
 RUN cd ~/hatohol && echo ${WERCKER_GIT_COMMIT:-"master"}
 RUN cd ~/hatohol && git checkout -qf ${WERCKER_GIT_COMMIT:-"master"}
+RUN cd ~/hatohol && git branch
 # build
 RUN cd ~/hatohol && libtoolize && autoreconf -i
 RUN cd ~/hatohol && scl enable devtoolset-2 "./configure"
