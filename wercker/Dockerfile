@@ -22,6 +22,7 @@ RUN rpm -Uvh http://sourceforge.net/projects/cutter/files/centos/cutter-release-
 RUN yum install -y cutter tar
 # git clone
 RUN git clone https://github.com/project-hatohol/hatohol.git ~/hatohol
+RUN cd ~/hatohol && git checkout -qf ${WERCKER_GIT_COMMIT:-"master"}
 # build
 RUN cd ~/hatohol && libtoolize && autoreconf -i
 RUN cd ~/hatohol && scl enable devtoolset-2 "./configure"
