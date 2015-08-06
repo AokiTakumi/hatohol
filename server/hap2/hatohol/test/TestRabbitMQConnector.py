@@ -19,7 +19,7 @@
 """
 import unittest
 import os
-import common as testutils
+import testutils
 import subprocess
 from rabbitmqconnector import RabbitMQConnector
 from rabbitmqconnector import OverCapacity
