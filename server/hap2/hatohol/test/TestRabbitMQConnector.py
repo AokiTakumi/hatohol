@@ -59,7 +59,7 @@ class TestRabbitMQConnector(unittest.TestCase):
 
     def test__setup_ssl(self):
         conn = RabbitMQConnector()
-        target_func = testutils.returnPrivObj(conn, "__setup_ssl", "RabbitMQConnector")
+        target_func = testutils.get_priv_attr(conn, "__setup_ssl")
         conn_args = {}
         transporter_args = self.__get_default_transporter_args()
         target_func(conn_args, transporter_args)
