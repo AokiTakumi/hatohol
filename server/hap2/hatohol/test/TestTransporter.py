@@ -70,7 +70,9 @@ class Manager(unittest.TestCase):
 
     def test_register_and_find(self):
         class testTrans:
-            pass
+            @classmethod
+            def define_arguments(cls, parser):
+                pass
 
         manager = transporter.Manager(None)
         self.assertIsNone(manager.find("testTrans"))
