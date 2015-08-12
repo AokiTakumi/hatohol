@@ -141,6 +141,11 @@ class Manager(object):
             transporter_class.define_arguments(parser)
 
     def find(self, name):
+        """
+        Find transporter from the registered list.
+        @param name a name of the transporter
+        @return A class of the found transporter or None if not.
+        """
         return self.__transporters.get(name)
 
     def __import_modules(self):
