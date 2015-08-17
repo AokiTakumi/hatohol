@@ -27,6 +27,7 @@ classes used in them have to be in this module.
 
 import logging
 import sys
+import errno
 import time
 import traceback
 import multiprocessing
@@ -66,10 +67,22 @@ class Signal:
         self.restart = restart
         self.critical = critical
 
+def _handle_ioerr(e, timeout, expired_time):
+    if e.errno != errno.EINTR:
+        raise
+    if timeout is None:
+        return None
+    curr_time = time.time()
+    if expired_time < curr_time:
+        return 0
+    return expired_time - curr_time
+
+
 def MultiprocessingQueue(queue_class=multiprocessing.Queue):
     """
     The purpose of this function is to provide get() method with a retry
     when EINTR happens.
+
     """
     def __get(block=True, timeout=None):
         start_time = time.time()
@@ -78,16 +91,8 @@ def MultiprocessingQueue(queue_class=multiprocessing.Queue):
         while True:
             try:
                 return original_get(block, timeout)
-            except IOError as (errno, strerror):
-                if errno != errno.EINTR:
-                    raise
-                if timeout is None:
-                    continue
-                curr_time = time.time()
-                if expired_time > curr_time:
-                    timeout = expired_time - curr_time
-                else:
-                    timeout = 0
+            except IOError as e:
+                timeout = _handle_ioerr(e, timeout, expired_time)
 
     q = queue_class()
     original_get = q.get
