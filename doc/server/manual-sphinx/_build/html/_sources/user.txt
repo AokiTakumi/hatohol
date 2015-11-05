@@ -1,0 +1,108 @@
+=========================
+User
+=========================
+
+Request
+=======
+
+Path
+----
+.. list-table::
+   :header-rows: 1
+
+   * - URL
+     - Comments
+   * - /tunnel/user
+     - N/A
+
+Parameters
+----------
+.. list-table::
+   :header-rows: 1
+
+   * - Parameter
+     - Value
+     - Comments
+     - JSON
+     - JSONP
+   * - fmt
+     - json or jsonp
+     - This parameter is omitted, the return format is json.
+     - Optional 
+     - Optional
+   * - callback
+     - The name of returned JSONP object.
+     - N/A
+     - N/A
+     - Mandatory
+
+Response
+========
+
+Repsponse structure
+-------------------
+.. list-table::
+   :header-rows: 1
+
+   * - Key
+     - Value type
+     - Brief
+     - Condition
+   * - apiVersion
+     - Number
+     - An API version of this URL.
+       This document is written for version **2**.
+     - Always
+   * - errorCode
+     - String
+     -
+     -
+   * - errorMessage
+     - String
+     - Error message. This key is reply only when result is False.
+     - False
+   * - numberOfUsers
+     - Number
+     - The number of users.
+     - True
+   * - users
+     - Array
+     - The array of `Users object`_.
+     - True
+   * - UsersRoles 
+     - Object
+     -
+     -
+
+.. note:: [Condition] Always: always, True: only when result is True, False: only when result is False.
+
+Users object
+-------------
+.. list-table::
+   :header-rows: 1
+
+   * - Key
+     - Value type
+     - Brief
+   * - userId
+     - Number
+     -
+   * - name
+     - String
+     - 
+   * - flags
+     - Number
+     - 
+
+
+UserRoles object
+-------------
+.. list-table::
+   :header-rows: 1
+
+   * - Key
+     - Value type
+     - Brief
+   * - name
+     - String
+     - A hostname of the server.

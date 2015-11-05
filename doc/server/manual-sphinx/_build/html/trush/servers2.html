@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Servers &mdash; HATOHOL REST Service 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="HATOHOL REST Service 0.1 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">HATOHOL REST Service 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="servers">
+<h1>Servers<a class="headerlink" href="#servers" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="request">
+<h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="path">
+<h3>Path<a class="headerlink" href="#path" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">URL</th>
+<th class="head">Comments</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>/server</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Value</th>
+<th class="head">Comments</th>
+<th class="head">JSON</th>
+<th class="head">JSONP</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>fmt</td>
+<td>json or jsonp</td>
+<td>This parameter is omitted, the return format is json.</td>
+<td>Optional</td>
+<td>Optional</td>
+</tr>
+<tr class="row-odd"><td>callback</td>
+<td>The name of returned JSONP object.</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>Mandatory</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="response">
+<h2>Response<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="repsponse-structure">
+<h3>Repsponse structure<a class="headerlink" href="#repsponse-structure" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Value type</th>
+<th class="head">Brief</th>
+<th class="head">Condition</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>apiVersion</td>
+<td>Number</td>
+<td>An API version of this URL.
+This document is written for version <strong>2</strong>.</td>
+<td>Always</td>
+</tr>
+<tr class="row-odd"><td>result</td>
+<td>Boolean</td>
+<td>True on success. Otherwise False and the reason is shown in the
+element: message.</td>
+<td>Always</td>
+</tr>
+<tr class="row-even"><td>message</td>
+<td>String</td>
+<td>Error message. This key is reply only when result is False.</td>
+<td>False</td>
+</tr>
+<tr class="row-odd"><td>numberOfServers</td>
+<td>Number</td>
+<td>The number of servers.</td>
+<td>True</td>
+</tr>
+<tr class="row-even"><td>servers</td>
+<td>Array</td>
+<td>The array of <a class="reference internal" href="#server-object">Server object</a>.</td>
+<td>True</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">[Condition] Always: always, True: only when result is True, False: only when result is False.</p>
+</div>
+</div>
+<div class="section" id="server-object">
+<h3>Server object<a class="headerlink" href="#server-object" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Value type</th>
+<th class="head">Brief</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>id</td>
+<td>Number</td>
+<td>A unique server ID.</td>
+</tr>
+<tr class="row-odd"><td>type</td>
+<td>Number</td>
+<td>Any of <a class="reference internal" href="#server-type">Server type</a>.</td>
+</tr>
+<tr class="row-even"><td>hostName</td>
+<td>String</td>
+<td>A host name.</td>
+</tr>
+<tr class="row-odd"><td>ipAddress</td>
+<td>String</td>
+<td>An IP Address of the server.</td>
+</tr>
+<tr class="row-even"><td>nickname</td>
+<td>String</td>
+<td>Arbitrary nickname of the server.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="server-type">
+<h3>Server type<a class="headerlink" href="#server-type" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>0</td>
+<td>Zabbix</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>Nagios</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Servers</a><ul>
+<li><a class="reference internal" href="#request">Request</a><ul>
+<li><a class="reference internal" href="#path">Path</a></li>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#response">Response</a><ul>
+<li><a class="reference internal" href="#repsponse-structure">Repsponse structure</a></li>
+<li><a class="reference internal" href="#server-object">Server object</a></li>
+<li><a class="reference internal" href="#server-type">Server type</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/trush/servers2.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">HATOHOL REST Service 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Project Hatohol.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

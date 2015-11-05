@@ -1,0 +1,92 @@
+=========================
+Servers-type
+=========================
+
+Request
+=======
+
+Path
+----
+.. list-table::
+   :header-rows: 1
+
+   * - URL
+     - Comments
+   * - /tunnel/server
+     - N/A
+
+
+Parameters
+----------
+.. list-table::
+   :header-rows: 1
+
+   * - Parameter
+     - Value
+     - Comments
+     - JSON
+     - JSONP
+
+Response
+========
+
+Repsponse structure
+-------------------
+.. list-table::
+   :header-rows: 1
+
+   * - Key
+     - Value type
+     - Brief
+     - Condition
+   * - apiVersion
+     - Number
+     - An API version of this URL.
+       This document is written for version **2**.
+     - Always
+   * - errorCode
+     - Number
+     -
+     -
+   * - errorMessage
+     - String
+     - Error message. This key is reply only when result is False.
+     - False
+   * - serverType
+     - Array
+     - 
+     - Always
+
+.. note:: [Condition] Always: always, True: only when result is True, False: only when result is False.
+
+ServerType object
+-------------
+.. list-table::
+   :header-rows: 1
+
+   * - Key
+     - Value type
+     - Brief
+   * - type
+     - Number
+     -
+   * - name
+     - String
+     - 
+   * - uuid
+     - String
+     -
+   * - parameters
+     - String
+     -
+
+
+Server type
+-------------
+.. list-table::
+
+   * - 0
+     - Zabbix
+   * - 1
+     - Nagios
+

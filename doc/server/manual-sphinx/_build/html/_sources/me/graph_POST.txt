@@ -1,0 +1,109 @@
+=========================
+Graph_POST
+=========================
+
+Request
+=======
+
+Path
+----
+.. list-table::
+   :header-rows: 1
+
+   * - URL
+     - Comments
+   * - /tunnel/graph
+     - N/A
+
+Parameters
+----------
+.. list-table::
+   :header-rows: 1
+
+   * - Parameter
+     - Value
+     - Comments
+     - JSON
+     - JSONP
+   * - fmt
+     - json or jsonp
+     - This parameter is omitted, the return format is json.
+     - Optional 
+     - Optional
+   * - callback
+     - The name of returned JSONP object.
+     - N/A
+     - N/A
+     - Mandatory
+
+
+Response
+========
+
+Repsponse structure
+-------------------
+.. list-table::
+   :header-rows: 1
+
+   * - Key
+     - Value type
+     - Brief
+     - Condition
+   * - id
+     - Number
+     - 
+     - Always
+   * - user_id
+     - Number
+     -
+     - Always
+   * - histroies
+     - Object
+     -
+     -
+   * - title
+     - String
+     -
+     - Always
+
+.. note:: [Condition] Always: always, True: only when result is True, False: only when result is False.
+
+Histories object
+-------------
+.. list-table::
+   :header-rows: 1
+
+   * - Key
+     - Value type
+     - Brief
+   * - hostgroupId
+     - Number
+     -
+   * - itemId
+     - Number
+     -
+   * - severId
+     - Number
+     -
+   * - hostId
+     - Number
+     -
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

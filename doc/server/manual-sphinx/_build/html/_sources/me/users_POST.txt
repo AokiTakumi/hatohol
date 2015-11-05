@@ -1,0 +1,75 @@
+=========================
+User_POST
+=========================
+
+Request
+=======
+
+Path
+----
+.. list-table::
+   :header-rows: 1
+
+   * - URL
+     - Comments
+   * - /tunnel/user
+     - N/A
+
+Parameters
+----------
+.. list-table::
+   :header-rows: 1
+
+   * - Parameter
+     - Value
+     - Comments
+     - JSON
+     - JSONP
+   * - name
+     -
+     -
+     -
+     -
+   * - password
+     -
+     -
+     -
+     -
+   * - flags
+     -
+     -
+     -
+     -
+
+Response
+========
+
+Repsponse structure
+-------------------
+.. list-table::
+   :header-rows: 1
+
+   * - Key
+     - Value type
+     - Brief
+     - Condition
+   * - apiVersion
+     - Number
+     - An API version of this URL.
+       This document is written for version **2**.
+     - Always
+   * - errorCode
+     - String
+     -
+     -
+   * - errorMessage
+     - String
+     - Error message. This key is reply only when result is False.
+     - False
+   * - id
+     - Number
+     - 
+     - Always
+
+.. note:: [Condition] Always: always, True: only when result is True, False: only when result is False.
+

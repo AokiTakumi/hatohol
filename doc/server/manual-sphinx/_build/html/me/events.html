@@ -1,0 +1,501 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Event &mdash; HATOHOL REST Service 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="HATOHOL REST Service 0.1 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">HATOHOL REST Service 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="event">
+<h1>Event<a class="headerlink" href="#event" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="request">
+<h2>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="path">
+<h3>Path<a class="headerlink" href="#path" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">URL</th>
+<th class="head">Comments</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>/tunnel/event</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Value</th>
+<th class="head">Comments</th>
+<th class="head">JSON</th>
+<th class="head">JSONP</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>fmt</td>
+<td>json or jsonp</td>
+<td>This parameter is omitted, the return format is json.</td>
+<td>Optional</td>
+<td>&lt;-</td>
+</tr>
+<tr class="row-odd"><td>callback</td>
+<td>The name of returned JSONP object.</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>Mandatory</td>
+</tr>
+<tr class="row-even"><td>limit</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>offset</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>limitOfUnifiedId</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>sortType</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>sortOrder</td>
+<td>Any of <a class="reference internal" href="#sort-order">Sort order</a>.</td>
+<td>The default value is SORT_DONT_CARE.</td>
+<td>If startId is specified, SORT_ASCENDING or SORT_DESCENDING has to be
+specified. Otherwise optional.</td>
+<td>&lt;-</td>
+</tr>
+<tr class="row-odd"><td>minimumSeverity</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>type</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="sort-order">
+<h3>Sort order<a class="headerlink" href="#sort-order" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>0</td>
+<td>SORT_DONT_CARE</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>SORT_ASCENDING</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>SORT_DESCENDING</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="response">
+<h2>Response<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="repsponse-structure">
+<h3>Repsponse structure<a class="headerlink" href="#repsponse-structure" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Value type</th>
+<th class="head">Brief</th>
+<th class="head">Condition</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>apiVersion</td>
+<td>Number</td>
+<td>An API version of this URL.
+This document is written for version <strong>3</strong>.</td>
+<td>Always</td>
+</tr>
+<tr class="row-odd"><td>haveIncident</td>
+<td>Boolean</td>
+<td>True on success. Otherwise False and the reason is shown in the
+element: errorMessage.</td>
+<td>Always</td>
+</tr>
+<tr class="row-even"><td>errorMessage</td>
+<td>String</td>
+<td>Error message. This key is reply only when result is False.</td>
+<td>False</td>
+</tr>
+<tr class="row-odd"><td>errorCode</td>
+<td>Number</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>lastUnifiedEventlId</td>
+<td>Number</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>numberOfEvents</td>
+<td>Number</td>
+<td>The number of events.</td>
+<td>True</td>
+</tr>
+<tr class="row-even"><td>events</td>
+<td>Array</td>
+<td>The array of <a class="reference internal" href="#event-object">Event object</a>.</td>
+<td>True</td>
+</tr>
+<tr class="row-odd"><td>servers</td>
+<td>Object</td>
+<td>List of <a class="reference internal" href="#server-object">Server object</a>. Keys for each <a class="reference internal" href="#server-object">Server object</a> are server IDs which corresponds to serverId values in <a class="reference internal" href="#event-object">Event object</a>.</td>
+<td>True</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">[Condition] Always: always, True: only when result is True, False: only when result is False.</p>
+</div>
+</div>
+<div class="section" id="event-object">
+<h3>Event object<a class="headerlink" href="#event-object" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only the event of the triggers are returned in the current version.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Value type</th>
+<th class="head">Brief</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>unifiedId</td>
+<td>Number</td>
+<td>A unified ID. This Id is unique in the Haothol DB.</td>
+</tr>
+<tr class="row-odd"><td>serverId</td>
+<td>Number</td>
+<td>A server ID.</td>
+</tr>
+<tr class="row-even"><td>time</td>
+<td>Number</td>
+<td>A time of the event.</td>
+</tr>
+<tr class="row-odd"><td>type</td>
+<td>Number</td>
+<td>An <a class="reference internal" href="#event-type">Event type</a>.</td>
+</tr>
+<tr class="row-even"><td>triggerId</td>
+<td>Number</td>
+<td>The trigger ID.</td>
+</tr>
+<tr class="row-odd"><td>eventId</td>
+<td>Number</td>
+<td>The event ID.</td>
+</tr>
+<tr class="row-even"><td>status</td>
+<td>Number</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>severity</td>
+<td>Number</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>hostId</td>
+<td>Number</td>
+<td>A host ID.</td>
+</tr>
+<tr class="row-odd"><td>brief</td>
+<td>String</td>
+<td>A brief of the event.</td>
+</tr>
+<tr class="row-even"><td>extendedInfo</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="server-object">
+<h3>Server object<a class="headerlink" href="#server-object" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Value type</th>
+<th class="head">Brief</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>A hostname of the server.</td>
+</tr>
+<tr class="row-odd"><td>nickname</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>type</td>
+<td>Number</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>ipAddress</td>
+<td>String</td>
+<td>An IP Address of the server.</td>
+</tr>
+<tr class="row-even"><td>baseURL</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>hosts</td>
+<td>Object</td>
+<td>List of <a class="reference internal" href="#host-object">Host object</a>. Keys for each <a class="reference internal" href="#host-object">Host object</a> are host IDs which corresponds to hostId values in <a class="reference internal" href="#event-object">Event object</a>.</td>
+</tr>
+<tr class="row-even"><td>groups</td>
+<td>Object</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="host-object">
+<h3>Host object<a class="headerlink" href="#host-object" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Value type</th>
+<th class="head">Brief</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>A hostname of the host.</td>
+</tr>
+<tr class="row-odd"><td>type</td>
+<td>Number</td>
+<td>A <a class="reference internal" href="#server-type">Server type</a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="group-object">
+<h3>Group object<a class="headerlink" href="#group-object" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Value type</th>
+<th class="head">Brief</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>A hostname of the host.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="event-type">
+<h3>Event type<a class="headerlink" href="#event-type" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>0</td>
+<td>EVENT_TYPE_GOOD</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>EVENT_TYPE_BAD</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>EVENT_TYPE_UNKNOWN</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>EVENT_TYPE_NOTIFICATION</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="server-type">
+<h3>Server type<a class="headerlink" href="#server-type" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>0</td>
+<td>Zabbix</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>Nagios</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Event</a><ul>
+<li><a class="reference internal" href="#request">Request</a><ul>
+<li><a class="reference internal" href="#path">Path</a></li>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+<li><a class="reference internal" href="#sort-order">Sort order</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#response">Response</a><ul>
+<li><a class="reference internal" href="#repsponse-structure">Repsponse structure</a></li>
+<li><a class="reference internal" href="#event-object">Event object</a></li>
+<li><a class="reference internal" href="#server-object">Server object</a></li>
+<li><a class="reference internal" href="#host-object">Host object</a></li>
+<li><a class="reference internal" href="#group-object">Group object</a></li>
+<li><a class="reference internal" href="#event-type">Event type</a></li>
+<li><a class="reference internal" href="#server-type">Server type</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/me/events.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">HATOHOL REST Service 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Project Hatohol.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
